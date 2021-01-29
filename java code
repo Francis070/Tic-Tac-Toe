@@ -1,0 +1,128 @@
+package com.example.xogame;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import android.util.Log;
+import android.view.View;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import java.util.*;
+
+
+
+
+public class MainActivity extends AppCompatActivity {
+
+    int activePlayer = 0;
+
+    boolean isActive = true;
+
+    int[] v = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+    int[][] winnningpositions = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
+
+    public void change(View view){
+
+        ImageView counter = (ImageView) view;
+        String ts = counter.getTag().toString();
+
+        int current = Integer.parseInt(ts);
+
+        if((v[current] == -1) && (isActive == true)) {
+            v[current] = activePlayer;
+            counter.setTranslationY(-1000f);
+            if (activePlayer == 1) {
+                counter.setImageResource(R.drawable.circle);
+                activePlayer = 0;
+            } else if(activePlayer == 0) {
+                counter.setImageResource(R.drawable.cross);
+                activePlayer = 1;
+            }
+            counter.animate().translationYBy(1000f);
+            boolean gofor = true;
+            for (int[] win : winnningpositions) {
+                if ((v[win[0]] == v[win[1]]) && (v[win[1]] == v[win[2]]) && (v[win[0]] != -1)) {
+
+                    isActive = false;
+
+                    String s = "Cross";
+                    if (v[win[0]] == 1) {
+                        s = "Circle";
+                    }
+                    TextView message = (TextView) findViewById(R.id.winnerMessage);
+                    message.setText(s + " has WON!!!");
+                    // someone has won
+
+                    LinearLayout layout = (LinearLayout) findViewById(R.id.playAgainLayout);
+                    layout.setVisibility(View.VISIBLE);
+
+                    gofor = false;
+                }
+            }
+            if(gofor) {
+                boolean gameOver = true;
+
+                for (int state : v) {
+                    if (state == -1)
+                        gameOver = false;
+                }
+
+                if (gameOver) {
+
+                    TextView message = (TextView) findViewById(R.id.winnerMessage);
+                    message.setText("It is a DRAW");
+                    // someone has won
+//                        isActive = false;
+                    LinearLayout layout = (LinearLayout) findViewById(R.id.playAgainLayout);
+                    layout.setVisibility(View.VISIBLE);
+
+                }
+            }
+        }
+//        Log.d("this is my array", "arr: " + Arrays.toString(v));
+    }
+
+    public void playAgain(View view){
+
+        // Log.i("info", "The play again button was pressed.");
+        isActive = true;
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.playAgainLayout);
+        layout.setVisibility(View.INVISIBLE);
+
+        activePlayer = 0;
+
+        for(int i = 0; i<v.length; i++) {
+            v[i] = -1;
+        }
+
+//        GridLayout grid = (GridLayout) findViewById(R.id.gridLayout);
+//
+//        for(int i = 0; i < 9; i++){
+//            ((ImageView) grid.getChildAt(i)).setImageResource(0);
+//        }
+        ImageView i1 = (ImageView) findViewById(R.id.imageView);
+        ImageView i2 = (ImageView) findViewById(R.id.imageView2);
+        ImageView i3 = (ImageView) findViewById(R.id.imageView3);
+        ImageView i4 = (ImageView) findViewById(R.id.imageView4);
+        ImageView i5 = (ImageView) findViewById(R.id.imageView5);
+        ImageView i6 = (ImageView) findViewById(R.id.imageView6);
+        ImageView i7 = (ImageView) findViewById(R.id.imageView7);
+        ImageView i8 = (ImageView) findViewById(R.id.imageView8);
+        ImageView i9 = (ImageView) findViewById(R.id.imageView9);
+
+        ImageView[] imgs = {i1, i2, i3, i4, i5, i6, i7, i8, i9};
+        for(int i = 0; i<imgs.length; i++){
+            imgs[i].setImageResource(0);
+        }
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+}
